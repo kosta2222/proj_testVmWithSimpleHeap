@@ -833,24 +833,35 @@ def atom(token):
                         ##else:
                         ##self.sp+=1
                         ##self.steck[self.sp]=FALSE#False 
-#**********************End Py Vm*********************************                        
-   
-import libproj_testVmWithSimpleHeap as vm        
-str_fileName=sys.argv[1]
-#str_fileName='./code_Arifm.lisp' 
-fileDescr=open(str_fileName,"r")
+#**********************End Py Vm********************************* 
+def  writeObjectFile_sLrV(l_byteCode):
+    """
+    Функция записи из списка байт-кода в файл обьектной программы
+    writeObjectFile_sLrV
+    """ 
+    objectProgramName='code.bin'
+    with open(objectProgramName,'wb') as fileObj:
+        for i in l_byteCode:
+            fileObj.write(i)
+#**********************Программа********************************   
+#import libproj_testVmWithSimpleHeap as vm  
 obj_LispMach=LispMach()
+
+str_sourceFileName=sys.argv[1]
+fileDescr=open(str_sourceFileName,"r") # получаем файловый дескриптор для чтения исходной программы
 str_textProgram=fileDescr.read()
-#print(str_textProgram)
-obj_LispMach.me_recurs_evalPerList_SMrV(read(str_textProgram))
+obj_LispMach.me_recurs_evalPerList_SMrV(read(str_textProgram)) # анализируем исходный код программы в компиляторе
 print(obj_LispMach)
 l_retBytecode=obj_LispMach.me_ret_byteCode_SVrL()
 l_retBytecode.append(HALT)
-vm.eval(l_retBytecode,obj_LispMach.fi_int_startIp,1)
+writeObjectFile_sLrV(l_retBytecode)
+#vm.eval(l_retBytecode,obj_LispMach.fi_int_startIp,1)
 #vectorKintK_opCode=obj_LispMach.me_ret_byteCode_SVrL()
 #vectorKintK_opCode.append(HALT)
 #obj_vm=Vm(vectorKintK_opCode,trace=True)
 #obj_vm.exec_(obj_LispMach.fi_int_startIp)
 ## отпечатаем состояние Heap
 #print('Heap: %s'%str(obj_vm.heap))
+#***********************End Программа****************************
+
 
