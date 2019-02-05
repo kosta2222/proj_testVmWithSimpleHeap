@@ -842,14 +842,16 @@ def  writeObjectFile_sLrV(l_byteCode):
     objectProgramName='code.bin'
     with open(objectProgramName,'wb') as fileObj:
         for i in l_byteCode:
-            fileObj.write(i)
+            oneBinData=pack('B',i)
+            fileObj.write(oneBinData)
 #**********************Программа********************************   
-#import libproj_testVmWithSimpleHeap as vm  
-obj_LispMach=LispMach()
+#import libproj_testVmWithSimpleHeap as vm 
 
-str_sourceFileName=sys.argv[1]
+obj_LispMach=LispMach() # заводим обьект компилятора
+
+str_sourceFileName=sys.argv[1] # считываем в файловый обьект исходный текст программы из коммандной строки
 fileDescr=open(str_sourceFileName,"r") # получаем файловый дескриптор для чтения исходной программы
-str_textProgram=fileDescr.read()
+str_textProgram=fileDescr.read() # получаем конкретную строку исходной программы 
 obj_LispMach.me_recurs_evalPerList_SMrV(read(str_textProgram)) # анализируем исходный код программы в компиляторе
 print(obj_LispMach)
 l_retBytecode=obj_LispMach.me_ret_byteCode_SVrL()
