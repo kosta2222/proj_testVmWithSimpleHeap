@@ -1,4 +1,5 @@
 #include "vm.h"
+
 /** вызвать пользовательскую функцию
  \param [in] funcid индификатор функции
  \param [in] argc количество аргументов
@@ -147,6 +148,7 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           vm_print_instr (vm->code, ip);
 
         }
+      printf ("number of byte-code:%d\n", opcode);
       ip++;
       switch (opcode)
         {
@@ -206,13 +208,13 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           if (vm->stack[sp--] == false) ip = addr;
           break;
         case ICONST:
-          
-            vm->stack[++sp] = *((float*) &vm->code[ip]);
 
-            ip += 3;
-            ip++;
-            break;
-          
+          vm->stack[++sp] = *((float*) &vm->code[ip]);
+
+          ip += 3;
+          ip++;
+          break;
+
         case LOAD:
           offset = vm->code[ip++];
           vm->stack[++sp] = vm->call_stack[callsp].locals[offset];
@@ -346,7 +348,7 @@ vm_print_instr (unsigned char *code, int ip)
       if (opcode == ICONST)
         {
 
-          printf ("%04d: ICONST %f", ip, *((float*) &(code[ip + 1])));
+          printf ("%04d: %-10s %f", ip,"iconst", *((float*) &(code[ip])));
         }
       else
         {
@@ -399,68 +401,32 @@ vm_print_locals (float *locals, int count)
     }
 }
 
-/** Выполнить Вм для Python расширения
- */
-static PyObject*
-evalVm_poPoRpo (PyObject *self, PyObject * args)
+u1*
+readSourceProgramFile (const char* filename)
 {
-  PyObject * po_listObj;
-  int int_startIp;
-  int returnPrintOpFromLocals_flag = 0;
-
-  if (!PyArg_ParseTuple (args, "Oii", &po_listObj, &int_startIp, &returnPrintOpFromLocals_flag))
+  u1* opcodeCharBuffer = (u1*) malloc (256);
+  FILE *fp;
+  // чтение из файла
+  if ((fp = fopen (filename, "rb")) == NULL)
     {
-      return NULL;
+      perror ("Error occured while opening file");
+      exit (2);
     }
-
-  int int_length_PyList = (int) PyList_Size (po_listObj);
-  unsigned char * ucharPtr_vectorKcharK_ProgramsOpcodes = (unsigned char*) calloc (int_length_PyList, sizeof (char));
-
-  for (int i = 0; i < int_length_PyList; i++)
+  // пока не дойдем до конца, считываем по 256 байт
+  while (fread (opcodeCharBuffer, 1, 256, fp) != NULL)
     {
-
-      PyObject* po_ItemPyList = PyList_GetItem (po_listObj, i);
-
-
-      long long_CElem = PyLong_AsLong (po_ItemPyList);
-      ucharPtr_vectorKcharK_ProgramsOpcodes[i] = (unsigned char) long_CElem;
     }
-  VM* vm = vm_create (ucharPtr_vectorKcharK_ProgramsOpcodes, int_length_PyList, 9);
-  float float_returnedFromPrintOp = 0.0;
-  float_returnedFromPrintOp = vm_exec (vm, int_startIp, true, returnPrintOpFromLocals_flag);
-  vm_print_data (vm->globals, vm->nglobals);
-  vm_free (vm);
-  return Py_BuildValue ("f", float_returnedFromPrintOp);
-
-
-  free (ucharPtr_vectorKcharK_ProgramsOpcodes);
-
-  return Py_None;
-
-
+  fclose (fp);
+  return opcodeCharBuffer;
 }
-/**Какие функции задействуем для Python расширения */
-static PyMethodDef funcs[] = {
-  {"eval", (PyCFunction) evalVm_poPoRpo, METH_VARARGS, ""},
-  {NULL, NULL, 0, NULL}
-};
-/** Структура Python модуля */
-static struct PyModuleDef cModPyDem = {
-  PyModuleDef_HEAD_INIT,
 
-  "VmTestPy",
-
-  "",
-  -1,
-
-  funcs
-};
-
-/** Экспорт в python */
-PyMODINIT_FUNC
-PyInit_libproj_testVmWithSimpleHeap (void)
+int
+main ()
 {
-  return PyModule_Create (&cModPyDem);
-
-
+  u1* binCode = readSourceProgramFile ("code.bin");
+  printf ("size of whole byte-code %d\n", sizeof (binCode));
+  VM *vm = vm_create (binCode, sizeof (binCode), 0);
+  vm_exec (vm, 0, true, 0);
+  vm_free (vm);
+  return 0;
 }
