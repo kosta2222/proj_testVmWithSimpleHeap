@@ -1,1 +1,1 @@
-($ (newarray (5))(dup) ) 
+($ (newarray (5)) ) 

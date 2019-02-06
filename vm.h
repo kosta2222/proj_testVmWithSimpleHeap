@@ -60,6 +60,7 @@ typedef uint32_t u4;
     /**
     Контекст для функции
      */
+    // ********
     typedef struct {
         long heapPtr;
         int type;
@@ -68,8 +69,10 @@ typedef uint32_t u4;
 
     typedef struct {
         float floatValue;
+        u4 intValue;
         Object object;
     } Variable;
+    // ********
 
     typedef struct {
         /** адрес возврата */
