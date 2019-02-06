@@ -1,0 +1,79 @@
+* Переопределения    
+typedef unsigned char u1;    
+typedef uint32_t u4;    
+* Что нового в переменных ВМ    
+Сделал такие структуры    
+typedef struct {    
+        long heapPtr;    
+        int type;    
+    
+    } Object;    
+    
+    typedef struct {    
+        float floatValue;    
+        u4 intValue;    
+        Object object;    
+    } Variable;    
+    
+и сделал такой операндовый стек:    
+Variable stack[DEFAULT_STACK_SIZE]    
+    
+    
+* Как попытался сделать кучу в стиле С    
+Обьявил глобальные переменные    
+Variable * m_objectMap[100];    
+u4 m_nNextObjectID = 0;    
+Первая строка - карта где хочу хранить массив указателей на    
+структуру Variable, эту структуру т.е. ее поле floatValue я 
+собираюсь использовать для постраения массивов для чисел и хранить указатель
+на такой массив хранить в m_objectMap.
+** Как я делал функцию создания массивы и отпечатки "карты",в последней ERROR!!!
+Принимает условный тип что это массив и количество элементов со стека,
+в исходном коде задается так
+($ (newarray(6)) соответственно появилась ветка в исполнителе 
+case NEWARRAY она выглядит так:
+ case NEWARRAY:
+          {
+            vm->stack[++sp].object = createNewArray (1, (int) vm->stack[sp].floatValue);
+          }
+ 
+Object
+createNewArray (u4 type, u4 count)
+{
+  Object object;
+  object.heapPtr = NULL;
+  object.type = 0;
+
+  // Создаем массив
+  Variable *obj = (Variable*) malloc (sizeof (Variable)*(count + 1));
+
+  // Добавляем обьект в "карту"
+  if (obj)
+    {
+      memset (obj, 0, sizeof (Variable) * (count + 1));
+      object.heapPtr = m_nNextObjectID++;
+      obj[0].intValue = type;
+      m_objectMap[object.heapPtr] = obj;
+    }
+
+
+  return object;
+}
+
+void
+dumpHeap ()
+{
+  // обработать "карту"
+  for (int i = 0; i < 10; i++) // возьмем 10 указателей
+    {
+      printf ("key %d=>\n", i);
+
+      Variable* ptrElem = m_objectMap[i]; // получаем указатель на массив из "карты"
+      for (int i = 0; i < 4; i++) // Надо отпечатать этот массив
+        {
+          printf ("%f:", ptrElem[i].floatValue);// Вот здсь ЗАВИСАЕТ-ОШИБКА
+        }
+
+    }
+
+}
