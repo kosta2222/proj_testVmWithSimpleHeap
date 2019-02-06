@@ -348,7 +348,7 @@ vm_print_instr (unsigned char *code, int ip)
       if (opcode == ICONST)
         {
 
-          printf ("%04d: %-10s %f", ip,"iconst", *((float*) &(code[ip])));
+          printf ("%04d: %-10s %f", ip, "iconst", *((float*) &(code[ip])));
         }
       else
         {
@@ -401,32 +401,45 @@ vm_print_locals (float *locals, int count)
     }
 }
 
-u1*
-readSourceProgramFile (const char* filename)
-{
-  u1* opcodeCharBuffer = (u1*) malloc (256);
-  FILE *fp;
-  // чтение из файла
-  if ((fp = fopen (filename, "rb")) == NULL)
-    {
-      perror ("Error occured while opening file");
-      exit (2);
-    }
-  // пока не дойдем до конца, считываем по 256 байт
-  while (fread (opcodeCharBuffer, 1, 256, fp) != NULL)
-    {
-    }
-  fclose (fp);
-  return opcodeCharBuffer;
-}
-
 int
 main ()
 {
-  u1* binCode = readSourceProgramFile ("code.bin");
-  printf ("size of whole byte-code %d\n", sizeof (binCode));
-  VM *vm = vm_create (binCode, sizeof (binCode), 0);
+  FILE * ptrFile = fopen ("code.bin", "r");
+
+  if (ptrFile == NULL)
+    {
+      fputs ("Ошибка файла", stderr);
+      exit (1);
+    }
+
+  // определяем размер файла
+  fseek (ptrFile, 0, SEEK_END); // устанавливаем позицию в конец файла
+  long lSize = ftell (ptrFile); // получаем размер в байтах
+  rewind (ptrFile); // устанавливаем указатель в конец файла
+
+  u1 * opcodeCharBuffer = (u1*) malloc (sizeof (u1) * lSize); // выделить память для хранения содержимого файла
+  if (opcodeCharBuffer == NULL)
+    {
+      fputs ("Ошибка памяти", stderr);
+      exit (2);
+    }
+
+  size_t result = fread (opcodeCharBuffer, 1, lSize, ptrFile); // считываем файл в буфер
+  if (result != lSize)
+    {
+      fputs ("Ошибка чтения", stderr);
+      exit (3);
+    }
+
+ 
+  // завершение работы
+  fclose (ptrFile);
+
+  printf ("size of whole byte-code %d\n", sizeof (opcodeCharBuffer));
+  VM *vm = vm_create (opcodeCharBuffer, sizeof (opcodeCharBuffer), 0);
   vm_exec (vm, 0, true, 0);
   vm_free (vm);
+  free (opcodeCharBuffer);
+ 
   return 0;
 }
