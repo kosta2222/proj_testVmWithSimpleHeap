@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 typedef unsigned char u1;
+typedef uint32_t u4;
 #define DEFAULT_STACK_SIZE      1000///<размер стека по умолчанию
 #define DEFAULT_CALL_STACK_SIZE 100///<размер стека контекстов по умолчанию
 #define DEFAULT_NUM_LOCALS      26 ///<количество локальных по умолчанию
