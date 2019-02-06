@@ -101,7 +101,7 @@ vm_create (unsigned char *code, int code_size, int nglobals)
   vm_init (vm, code, code_size, nglobals);
   return vm;
 }
-typedef uint32_t u4;
+
 
 /**
 Выпоолняе байт-коды
@@ -155,153 +155,153 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
         case NOOP:
           break;
         case IADD:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = a + b;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = a + b;
           break;
         case ISUB:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = a - b;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = a - b;
           break;
         case IMUL:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = a * b;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = a * b;
           break;
         case IDIV:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = a / b;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = a / b;
           break;
 
         case IREM:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = (int) a % (int) b;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = (int) a % (int) b;
           break;
 
         case IPOW:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = pow (a, b);
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = pow (a, b);
           break;
-        case ILT:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = (a < b) ? true : false;
-          break;
-        case IEQ:
-          b = vm->stack[sp--];
-          a = vm->stack[sp--];
-          vm->stack[++sp] = (a == b) ? true : false;
-          break;
-        case BR:
-          ip = vm->code[ip];
-          break;
-        case BRT:
-          addr = vm->code[ip];
-          if (vm->stack[sp--] == true) ip = addr;
-          break;
-        case BRF:
-          addr = vm->code[ip];
-          if (vm->stack[sp--] == false) ip = addr;
-          break;
+//        case ILT:
+//          b = vm->stack[sp--];
+//          a = vm->stack[sp--];
+//          vm->stack[++sp] = (a < b) ? true : false;
+//          break;
+//        case IEQ:
+//          b = vm->stack[sp--];
+//          a = vm->stack[sp--];
+//          vm->stack[++sp] = (a == b) ? true : false;
+//          break;
+//        case BR:
+//          ip = vm->code[ip];
+//          break;
+//        case BRT:
+//          addr = vm->code[ip];
+//          if (vm->stack[sp--] == true) ip = addr;
+//          break;
+//        case BRF:
+//          addr = vm->code[ip];
+//          if (vm->stack[sp--] == false) ip = addr;
+//          break;
         case ICONST:
 
-          vm->stack[++sp] = *((float*) &vm->code[ip]);
+          vm->stack[++sp].floatValue = *((float*) &vm->code[ip]);
 
           ip += 3;
           ip++;
           break;
 
-        case LOAD:
-          offset = vm->code[ip++];
-          vm->stack[++sp] = vm->call_stack[callsp].locals[offset];
-          break;
-        case GLOAD:
-          addr = vm->code[ip++];
-          vm->stack[++sp] = vm->globals[addr];
-          break;
-        case STORE:
-          offset = vm->code[ip++];
-          vm->call_stack[callsp].locals[offset] = vm->stack[sp--];
-          break;
-        case GSTORE:
-          addr = vm->code[ip++];
-          vm->globals[addr] = vm->stack[sp--];
-          break;
-        case PRINT:
-          {
-            int numberFromLocalsAsPar = vm->code[ip++];
-            float numberFromLocals = vm->call_stack[callsp].locals[numberFromLocalsAsPar];
-            printf ("print: %f\n", numberFromLocals);
-            if (returnPrintOpFromLocals_flag)
-              {
-                return numberFromLocals;
-              }
-
-            break;
-          }
-        case POP:
-          --sp;
-          break;
-        case 25 ... 25 + 15:
-          {
-            int argc = (int) vm->stack[sp--];
-            float argv[argc];
-            for (int i = 0; i < argc; i++)
-              {
-                argv[i] = vm->stack[sp--];
-
-              }
-            a = call_user (opcode - 25, argc, argv);
-            if (argc != 0)
-              {
-                vm->float_registrThatRetFunc = a;
-
-              }
-
-
-
-            break;
-
-          }
-        case CALL:
-          {
-
-            addr = vm->code[ip++];
-            int nargs = vm->code[ip++];
-            int I_firstarg = sp - nargs + 1;
-            ++callsp;
-
-            vm_context_init (&vm->call_stack[callsp], ip, 26);
-
-            for (int i = 0; i < nargs; i++)
-              {
-                vm->call_stack[callsp].locals[i] = vm->stack[I_firstarg + i];
-              }
-            sp -= nargs;
-            ip = addr;
-            break;
-          }
-        case RET:
-          {
-            ip = vm->call_stack[callsp].returnip;
-            callsp--;
-            break;
-          }
-        case STORE_RESULT:
-          {
-            int int_locNum = vm->code[ip++];
-            vm->float_registrThatRetFunc = vm->call_stack[callsp].locals[int_locNum];
-            break;
-          }
-        case LOAD_RESULT:
-          {
-            vm->stack[++sp] = vm->float_registrThatRetFunc;
-            break;
-          }
+//        case LOAD:
+//          offset = vm->code[ip++];
+//          vm->stack[++sp] = vm->call_stack[callsp].locals[offset];
+//          break;
+//        case GLOAD:
+//          addr = vm->code[ip++];
+//          vm->stack[++sp] = vm->globals[addr];
+//          break;
+//        case STORE:
+//          offset = vm->code[ip++];
+//          vm->call_stack[callsp].locals[offset] = vm->stack[sp--];
+//          break;
+//        case GSTORE:
+//          addr = vm->code[ip++];
+//          vm->globals[addr] = vm->stack[sp--];
+//          break;
+//        case PRINT:
+//          {
+//            int numberFromLocalsAsPar = vm->code[ip++];
+//            float numberFromLocals = vm->call_stack[callsp].locals[numberFromLocalsAsPar];
+//            printf ("print: %f\n", numberFromLocals);
+//            if (returnPrintOpFromLocals_flag)
+//              {
+//                return numberFromLocals;
+//              }
+//
+//            break;
+//          }
+//        case POP:
+//          --sp;
+//          break;
+//        case 25 ... 25 + 15:
+//          {
+//            int argc = (int) vm->stack[sp--];
+//            float argv[argc];
+//            for (int i = 0; i < argc; i++)
+//              {
+//                argv[i] = vm->stack[sp--];
+//
+//              }
+//            a = call_user (opcode - 25, argc, argv);
+//            if (argc != 0)
+//              {
+//                vm->float_registrThatRetFunc = a;
+//
+//              }
+//
+//
+//
+//            break;
+//
+//          }
+//        case CALL:
+//          {
+//
+//            addr = vm->code[ip++];
+//            int nargs = vm->code[ip++];
+//            int I_firstarg = sp - nargs + 1;
+//            ++callsp;
+//
+//            vm_context_init (&vm->call_stack[callsp], ip, 26);
+//
+//            for (int i = 0; i < nargs; i++)
+//              {
+//                vm->call_stack[callsp].locals[i] = vm->stack[I_firstarg + i];
+//              }
+//            sp -= nargs;
+//            ip = addr;
+//            break;
+//          }
+//        case RET:
+//          {
+//            ip = vm->call_stack[callsp].returnip;
+//            callsp--;
+//            break;
+//          }
+//        case STORE_RESULT:
+//          {
+//            int int_locNum = vm->code[ip++];
+//            vm->float_registrThatRetFunc = vm->call_stack[callsp].locals[int_locNum];
+//            break;
+//          }
+//        case LOAD_RESULT:
+//          {
+//            vm->stack[++sp] = vm->float_registrThatRetFunc;
+//            break;
+//          }
 
         default:
           {
@@ -368,13 +368,13 @@ vm_print_instr (unsigned char *code, int ip)
 }
 
 void
-vm_print_stack (float *stack, int count)
+vm_print_stack (Variable *stack, int count)
 {
   printf ("stack=[");
   for (int i = 0; i <= count; i++)
     {
 
-      printf (" %f", stack[i]);
+      printf (" %f", stack[i].floatValue);
     }
   printf (" ]\n");
 }

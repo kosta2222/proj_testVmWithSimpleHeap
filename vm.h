@@ -91,7 +91,7 @@ typedef uint32_t u4;
         int nglobals;
 
         /**  Операндовый стек */
-        float stack[DEFAULT_STACK_SIZE];
+        Variable stack[DEFAULT_STACK_SIZE];
         /**  регистр для значения от функции */
         float float_registrThatRetFunc;
         /**  стек контекстов */
@@ -109,7 +109,7 @@ typedef uint32_t u4;
     /** печатаем инструкцию */
     void vm_print_instr(unsigned char *code, int ip);
     /** печатаем стек */
-    void vm_print_stack(float *stack, int count);
+    void vm_print_stack(Variable *stack, int count);
     /** печатаем глобальные переменные*/
     void vm_print_data(float *globals, int count);
     /** вызвать пользовательскую функцию */
