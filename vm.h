@@ -43,14 +43,14 @@ typedef uint32_t u4;
         RET, ///<завершает функцию
         STORE_RESULT, ///<сохранить результат функции специальный регистр
         LOAD_RESULT, ///<загрузить результат прошлой функции из специального регистра на стек
-        INVOKE_BY_ORDINAL,
-        CREATE_STRING,
-        NEWARRAY,
-        IASTORE,
-        IALOAD,
-        DUP,
-        ASTORE,
-        ALOAD,
+        INVOKE_BY_ORDINAL,//< вызвать функцию по номеру в виртуальной машине
+        CREATE_STRING,//< создать строку в куче
+        NEWARRAY,//< создать массив в куче,взяв длину со стека
+        IASTORE,//<сохранить значение в массиве
+        IALOAD,//< загрузить значение из массива на стек
+        DUP,// < дублировать вершину стека
+        ASTORE,//< сохранить ссылку на объект в массив переменных(переменные)
+        ALOAD,//< загрузить ссылку на обьект на стек
         HALT ///<остановит виртуальную машину
     } VM_CODE;
     /**
@@ -67,12 +67,6 @@ typedef uint32_t u4;
 
     } Object;
 
-    typedef struct {
-        float floatValue;
-        u4 intValue;
-        Object object;
-    } Variable;
-    // ********
 
     typedef struct {
         /** адрес возврата */
