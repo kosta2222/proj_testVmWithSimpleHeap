@@ -1,7 +1,6 @@
 #include "vm.h"
 
 /** вызвать пользовательскую функцию
- \param [in] funcid индификатор функции
  \param [in] argc количество аргументов
  \param [in] массив целых аргументов
  \return значение
@@ -236,9 +235,10 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
         case IPOW:// возведение в степень
            b = vm->stack[sp--].floatValue;
            a = vm->stack[sp--].floatValue;
-           vm->stack[++sp].floatValue = pow (a, b);
+          vm->stack[++sp].floatValue = pow (a, b);
            break;
        case DUP:// дублирование вершины стека
+
 	  
           vm->stack[sp+1].floatValue=vm->stack[sp].floatValue
           sp+=1 

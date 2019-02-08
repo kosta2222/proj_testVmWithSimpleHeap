@@ -4,21 +4,20 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <math.h>
-#include<stdlib.h>
-#include <Python.h>
 #ifndef VM_H_
 #define VM_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
+
 
 typedef unsigned char u1;
 typedef uint32_t u4;
 #define DEFAULT_STACK_SIZE      1000///<размер стека по умолчанию
 #define DEFAULT_CALL_STACK_SIZE 100///<размер стека контекстов по умолчанию
-#define DEFAULT_NUM_LOCALS      26 ///<количество локальных по умолчанию
-
+#define DEFAULT_NUM_LOCALS      26 ///<количество локальных переменных  по умолчанию
+ /**
+    опкоды операций
+  */
     typedef enum {
         NOOP, ///<нет операций
         IADD, ///<сложение
@@ -53,21 +52,24 @@ typedef uint32_t u4;
         ALOAD,//< загрузить ссылку на обьект на стек
         HALT ///<остановит виртуальную машину
     } VM_CODE;
-    /**
-    опкоды операций
-     */
+   
 
-    /**
-    Контекст для функции
-     */
+   
     // ********
     typedef struct {
         long heapPtr;
         int type;
 
     } Object;
+    
+  typedef struct{
+    float floatValue;
+    u4 intValue;
+    Object object}Variable;
 
-
+    /**
+    Контекст для функции
+     */
     typedef struct {
         /** адрес возврата */
         int returnip;
@@ -112,8 +114,7 @@ typedef uint32_t u4;
     /** вызвать пользовательскую функцию */
     float call_user(int funcid, int argc, float *argv);
 
-#ifdef __cplusplus
-}
-#endif
+
+
 
 #endif
