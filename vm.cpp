@@ -120,15 +120,15 @@ createNewArray (u4 type, u4 count)
   object.type = 0;
 
   // Создаем массив
-  Variable *obj = (Variable*) malloc (sizeof (Variable)*(count + 1));
+  Variable *obj = (Variable*) malloc (sizeof (Variable)*(count));
 
   // Добавляем обьект в "карту"
   if (obj)
     {
-      memset (obj, 0, sizeof (Variable) * (count + 1));
+      memset (obj, 0, sizeof (Variable) * (count));
 
       object.heapPtr = m_nNextObjectID++;
-      obj[0].intValue = type;
+      //  obj[0].intValue = type;
       m_objectMap[object.heapPtr] = obj;
     }
 
@@ -144,33 +144,34 @@ dumpHeap ()
     {
       printf ("key %d=>\n", i);
 
-      if (m_objectMap[i] != NULL)
-        {
-          Variable* ptrElem = m_objectMap[i]; // получаем указатель на массив из "карты"
-          if (ptrElem[0].intValue != 0)
-            printf ("This type is %d", ptrElem[0].intValue);
+
+      Variable* ptrElemPointsToWholeObject = m_objectMap[i]; // получаем указатель на массив из "карты"
 
 
 
+//      if (m_objectMap[i] != NULL)
+//        {
 
-          for (int i = 1; i < 10; i++) // Надо отпечатать этот массив
+
+          for (int i = 0; i < 10; i++) // Надо отпечатать этот массив
             {
+              if (ptrElemPointsToWholeObject[i].floatValue != NULL)
+                {
+                  printf ("%f:", ptrElemPointsToWholeObject[i].floatValue);
 
-              printf ("%f:", ptrElem[i].floatValue);
-
-
+                }
             }
 
 
 
-        }
+//        }
     }
 
 }
 // *********
 
 /**
-Выпоолняе байт-коды
+Выполняе байт-коды
 \param[in] vm  экземпляр Vm
 \param[in] startip с какого байта выполнять опкоды
 \param[in] trace если трассировка?
@@ -263,6 +264,17 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
             vm->stack[sp + 1].object = createNewArray (1, (int) vm->stack[sp].floatValue);
             sp += 1;
             break;
+          }
+        case IALOAD:
+          {
+            // arrayref в стеке - обеспечивается текстом программы getObject!
+            Object heapKey = vm->stack[sp - 2].object;
+            // берем нужный индекс со стека - обеспечивается тем что после getObject! ложится число как нужный индекс
+
+            u4 index = (u4) (vm->stack[sp].floatValue);
+            //  на место arrayref в стеке записываем элемент-значение массива из кучи
+            vm->stack[(int) (sp - 1)] = m_objectMap[(u4) heapKey.heapPtr][index];
+            sp -= 1;
           }
           //        case ILT:
           //          b = vm->stack[sp--];
