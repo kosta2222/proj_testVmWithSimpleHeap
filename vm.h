@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <malloc.h>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 #ifndef VM_H_
 #define VM_H_
 
@@ -52,20 +55,20 @@ typedef uint32_t u4;
         ALOAD,//< загрузить ссылку на обьект на стек
         HALT ///<остановит виртуальную машину
     } VM_CODE;
-   
 
-   
+
+
     // ********
     typedef struct {
         long heapPtr;
         int type;
 
     } Object;
-    
+
   typedef struct{
     float floatValue;
     u4 intValue;
-    Object object}Variable;
+    Object object;}Variable;
 
     /**
     Контекст для функции

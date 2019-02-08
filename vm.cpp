@@ -126,6 +126,7 @@ createNewArray (u4 type, u4 count)
   if (obj)
     {
       memset (obj, 0, sizeof (Variable) * (count + 1));
+
       object.heapPtr = m_nNextObjectID++;
       obj[0].intValue = type;
       m_objectMap[object.heapPtr] = obj;
@@ -143,12 +144,26 @@ dumpHeap ()
     {
       printf ("key %d=>\n", i);
 
-      Variable* ptrElem = m_objectMap[i]; // получаем указатель на массив из "карты"
-      for (int i = 0; i < 4; i++) // Надо отпечатать этот массив
+      if (m_objectMap[i] != NULL)
         {
-          printf ("%f:", ptrElem[i].floatValue);
-        }
+          Variable* ptrElem = m_objectMap[i]; // получаем указатель на массив из "карты"
+          if (ptrElem[0].intValue != 0)
+            printf ("This type is %d", ptrElem[0].intValue);
 
+
+
+
+          for (int i = 1; i < 10; i++) // Надо отпечатать этот массив
+            {
+
+              printf ("%f:", ptrElem[i].floatValue);
+
+
+            }
+
+
+
+        }
     }
 
 }
@@ -221,27 +236,34 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           vm->stack[++sp].floatValue = a * b;
           break;
         case IDIV:
-           b = vm->stack[sp--].floatValue;
-           a = vm->stack[sp--].floatValue;
-           vm->stack[++sp].floatValue = a / b;
-           break;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = a / b;
+          break;
 
         case IREM:// получить остаток от деления
-           b = vm->stack[sp--].floatValue;
-           a = vm->stack[sp--].floatValue;
-           vm->stack[++sp].floatValue = (int) a % (int) b;
-           break;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = (int) a % (int) b;
+          break;
 
         case IPOW:// возведение в степень
-           b = vm->stack[sp--].floatValue;
-           a = vm->stack[sp--].floatValue;
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = pow (a, b);
-           break;
-       case DUP:// дублирование вершины стека
+          break;
+        case DUP:// дублирование вершины стека
 
-	  
-          vm->stack[sp+1].floatValue=vm->stack[sp].floatValue
-          sp+=1 
+
+          vm->stack[sp + 1].floatValue = vm->stack[sp].floatValue;
+          sp += 1;
+          break;
+        case NEWARRAY:
+          {
+            vm->stack[sp + 1].object = createNewArray (1, (int) vm->stack[sp].floatValue);
+            sp += 1;
+            break;
+          }
           //        case ILT:
           //          b = vm->stack[sp--];
           //          a = vm->stack[sp--];
@@ -265,7 +287,7 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           //          break;
         case ICONST:
 
-          vm->stack[++sp].floatValue = *((float*) &vm->code[ip]);e
+          vm->stack[++sp].floatValue = *((float*) &vm->code[ip]);
 
           ip += 3;
           ip++;
@@ -358,10 +380,7 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           //            vm->stack[++sp] = vm->float_registrThatRetFunc;
           //            break;
           //          }
-        case NEWARRAY:
-          {
-            vm->stack[++sp].object = createNewArray (1, (int) vm->stack[sp].floatValue);
-          }
+
 
         default:
           {
@@ -373,8 +392,8 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
 
       if (trace) vm_print_stack (vm->stack, sp);
       opcode = vm->code[ip];
-      printf ("Heap:\n");
-      dumpHeap ();
+
+
 
 
 
@@ -383,6 +402,8 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
     {
       vm_print_data (vm->globals, vm->nglobals);
     }
+  printf ("Heap:\n");
+  dumpHeap ();
 }
 
 static void

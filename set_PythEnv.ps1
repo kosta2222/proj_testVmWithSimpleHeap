@@ -1,0 +1,1 @@
+$env:path='D:\Programs\Python\Python363'
