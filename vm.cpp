@@ -149,8 +149,8 @@ dumpHeap ()
 
 
 
-//      if (m_objectMap[i] != NULL)
-//        {
+      if (m_objectMap[i] != NULL)
+        {
 
 
           for (int i = 0; i < 10; i++) // Надо отпечатать этот массив
@@ -164,7 +164,7 @@ dumpHeap ()
 
 
 
-//        }
+        }
     }
 
 }
@@ -265,16 +265,24 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
             sp += 1;
             break;
           }
-        case IALOAD:
+        case IALOAD: // загрузить значение с массива на стек
           {
             // arrayref в стеке - обеспечивается текстом программы getObject!
             Object heapKey = vm->stack[sp - 2].object;
-            // берем нужный индекс со стека - обеспечивается тем что после getObject! ложится число как нужный индекс
-
+            // берем нужный индекс со стека
             u4 index = (u4) (vm->stack[sp].floatValue);
-            //  на место arrayref в стеке записываем элемент-значение массива из кучи
-            vm->stack[(int) (sp - 1)] = m_objectMap[(u4) heapKey.heapPtr][index];
+            //  записываем элемент - значение массива из кучи
+            vm->stack[(u4) (sp - 1)] = m_objectMap[(u4) heapKey.heapPtr][index];
             sp -= 1;
+            break;
+          }
+        case IASTORE: // загрузить значение со стека в массив
+          {
+            Object heapKey = vm->stack[sp - 2].object;
+            m_objectMap[heapKey.heapPtr][(u4) (vm->stack[sp - 1].floatValue)] = vm->stack[sp];
+            sp -= 3;
+            break;
+
           }
           //        case ILT:
           //          b = vm->stack[sp--];
@@ -499,7 +507,7 @@ vm_print_locals (float *locals, int count)
 int
 main ()
 {
-  FILE * ptrFile = fopen ("code.bin", "r");
+  FILE * ptrFile = fopen ("code.bin", "rb");
 
   if (ptrFile == NULL)
     {
