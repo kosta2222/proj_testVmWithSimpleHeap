@@ -174,3 +174,144 @@ key 1 => key 2 => key 3 => key 4 => key 5 => key 6 => key 7 => key 8 => key 9 =>
 ***** 0 элемента обьекта будет обозначать его тип т.е. массив, взял 1 - почемуто отпечатал 10.000000
 В  ветка attempt-to-add-Array-Heap-support коммит  heap with array works but does not show it s type correctly
 
+
+
+* Проблемы с недостаточно выделенным буфером
+Отладка показывает что файл с размером 29 байт определяется
+как 4 байта через long lSize = ftell (ptrFile):
+```C
+int
+main ()
+{
+  FILE * ptrFile = fopen ("code.bin", "r");
+
+  if (ptrFile == NULL)
+    {
+      fputs ("Ошибка файла", stderr);
+      exit (1);
+    }
+
+  // определяем размер файла
+  fseek (ptrFile, 0, SEEK_END); // устанавливаем позицию в конец файла
+  long lSize = ftell (ptrFile); // получаем размер в байтах
+  rewind (ptrFile); // устанавливаем указатель в конец файла
+
+  u1 * opcodeCharBuffer = (u1*) malloc (sizeof (u1) * lSize); // выделить память для хранения содержимого файла
+  if (opcodeCharBuffer == NULL)
+    {
+      fputs ("Ошибка памяти", stderr);
+      exit (2);
+    }
+
+  size_t result = fread (opcodeCharBuffer, 1, lSize, ptrFile); // считываем файл в буфер
+  if (result != lSize)
+    {
+      fputs ("Ошибка чтения", stderr);
+      exit (3);
+    }
+
+
+  // завершение работы
+  fclose (ptrFile);
+
+  printf ("size of whole byte-code %d\n", sizeof (opcodeCharBuffer));
+  VM *vm = vm_create (opcodeCharBuffer, sizeof (opcodeCharBuffer), 0);
+  vm_exec (vm, 0, true, 0);
+  vm_free (vm);
+  free (opcodeCharBuffer);
+
+  return 0;
+}
+
+```
+<debug>
+Breakpoint 1, main ()
+    at d:/NetBeansCppProjects/proj_testVmWithSimpleHeap/vm.cpp:502
+502       FILE * ptrFile = fopen ("code.bin", "r");
+(gdb) n
+504       if (ptrFile == NULL)
+(gdb) n
+511       fseek (ptrFile, 0, SEEK_END); // устанавливаем позицию в конец файла  
+(gdb) n
+512       long lSize = ftell (ptrFile); // получаем размер файла в байтах 
+(gdb) p lSize
+$1 = 105
+(gdb) p sizeof(lSize )
+$2 = 4
+</debug>
+** int fseek (FILE *stream, long offset, int origin) 
+int fseek (FILE *stream, long offset, int origin)
+Прототип: 
+stdio.h
+Описание: 
+
+Функция fseek() устанавливает указатель положения в файле, связанном со stream, в соответ­ствии со значениями offset и origin.
+ Ее основное назначение — поддерживать операции ввода/ вывода по произвольному адресу.
+ Аргумент offset — это выраженный в байтах сдвиг от позиции, определяемой origin, до новой позиции.
+ Аргумент origin может принимать значения 0, 1 или 2, причем 0 означает начало файла, 1 — текущую позицию, а 2 — конец файла.
+ В stdio.h определе­ны следующие макросы для origim
+Имя 	Позиция origin
+SEEK_SET 	Начало файла
+SEEK_CUR 	Текущая позиция
+SEEK_END 	Конец файла
+
+ В случае успеха fseek() возвращает 0. Ненулевое значение означает неудачу.
+ С помощью fseek() можно переместить указатель положения в любую точку внутри файла и даже за его пределы после конца файла.
+ Однако попытка установить указатель перед началом файла будет восприня­та как ошибка.
+
+Функция fseek() сбрасывает флаг конца файла, связанный с указанным потоком.
+ Кроме того, она обнуляет любую предыдущую ungetc() в том же потоке.
+Пример: 
+Приведенная здесь функция отыскивает указанную структуру типа addr.
+ Обратим внимание на то, что sizeof используется как для получения количества байт, на которое нужно сместиться, так и для обеспечения переносимости.
+struct  addr {
+char    name[40];
+char    street[40];
+char    city[40] ;
+char    state[3];
+char zip[10];
+} info;
+void find(long client_num)
+{
+FILE *fp;
+if ((fp=fopen("mail", "rb"))==NULL) {
+printf("Cannot open file.\n");
+exit(1);
+}
+/* получение правильной структуры */
+fseek(client_num*sizeof(struct addr), 0);
+/* чтение данных в память */
+fread(&info, sizeof(struct addr), 1, fp);
+fclose(fp);
+}
+*** long ftell(FILE *stream)
+Прототип: 
+stdio.h
+Описание: 
+
+Функция ftell() возвращает текущее значение указателя положения в файле для указанного потока.
+ Это значение представляет собой количество байт, на которое указатель отстоит от начала файла.
+
+Функция ftell() возвращает — 1L в случае ошибки.
+ Если в данном потоке невозможен поиск по произвольному адресу (в случае, например, консоли), возвращаемое значение не определяется.
+Пример: 
+Этот фрагмент кода возвращает текущее значение указателя положения для потока, на который указывает fp:
+long i;
+if((i=ftell(fp))==-1L) printf("A file error has occurred.\n");
+*** void rewind(FILE *stream)
+Прототип: 
+stdio.h
+Описание: 
+
+Функция rewind() перемещает указатель положения в файле на начало указанного потока. Она также сбрасывает флаги конца файла и ошибки, связанные со stream. Она возвращает 0 в случае успеха и ненулевое значение в противном случае.
+Пример: 
+Данная функция дважды считывает поток, на который указывает fp, и каждый раз выводит файл на экран:
+void re_read(FILE *fp)
+{
+/* чтение один раз */
+while(!feof(fp)) putchar(getc(fp));
+rewind(fp);
+/* чтение два раза */
+while(!feof(fp)) putchar(getc(fp));
+}
+
