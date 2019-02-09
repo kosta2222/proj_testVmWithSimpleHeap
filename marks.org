@@ -179,7 +179,7 @@ key 1 => key 2 => key 3 => key 4 => key 5 => key 6 => key 7 => key 8 => key 9 =>
 * Проблемы с недостаточно выделенным буфером
 Отладка показывает что файл с размером 29 байт определяется
 как 4 байта через long lSize = ftell (ptrFile):
-```C
+``` C
 int
 main ()
 {
@@ -222,7 +222,6 @@ main ()
 
   return 0;
 }
-
 ```
 <debug>
 Breakpoint 1, main ()
