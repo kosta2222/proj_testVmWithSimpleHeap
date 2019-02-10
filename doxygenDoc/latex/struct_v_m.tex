@@ -1,0 +1,76 @@
+\hypertarget{struct_v_m}{}\section{VM Struct Reference}
+\label{struct_v_m}\index{VM@{VM}}
+
+
+{\ttfamily \#include $<$vm.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char $\ast$ \hyperlink{struct_v_m_a760a936633eb5c7b8de120b5d78f9ba6}{code}
+\item 
+int \hyperlink{struct_v_m_aa5f1f79d48c3a3512a232000f3eb4c26}{code\+\_\+size}
+\item 
+\hyperlink{union_variable}{Variable} $\ast$ \hyperlink{struct_v_m_a5a38d2d0aa60e11d8138fff312efb926}{globals}
+\item 
+int \hyperlink{struct_v_m_a68946a4843ec05f3c865d177fa982dbe}{nglobals}
+\item 
+\hyperlink{union_variable}{Variable} \hyperlink{struct_v_m_a3a031323e2030d712c26dd8f0c79f637}{stack} \mbox{[}D\+E\+F\+A\+U\+L\+T\+\_\+\+S\+T\+A\+C\+K\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\hyperlink{union_variable}{Variable} \hyperlink{struct_v_m_ac82f634bd85dcf9e68f615462f728b55}{registr\+That\+Ret\+Func}
+\item 
+\hyperlink{struct_context}{Context} \hyperlink{struct_v_m_ac4bacd79fc85e6a75477292f2dfd3707}{call\+\_\+stack} \mbox{[}D\+E\+F\+A\+U\+L\+T\+\_\+\+C\+A\+L\+L\+\_\+\+S\+T\+A\+C\+K\+\_\+\+S\+I\+ZE\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Компонент виртуальной машины 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{struct_v_m_ac4bacd79fc85e6a75477292f2dfd3707}\label{struct_v_m_ac4bacd79fc85e6a75477292f2dfd3707}} 
+\index{VM@{VM}!call\+\_\+stack@{call\+\_\+stack}}
+\index{call\+\_\+stack@{call\+\_\+stack}!VM@{VM}}
+\subsubsection{\texorpdfstring{call\+\_\+stack}{call\_stack}}
+{\footnotesize\ttfamily \hyperlink{struct_context}{Context} V\+M\+::call\+\_\+stack\mbox{[}D\+E\+F\+A\+U\+L\+T\+\_\+\+C\+A\+L\+L\+\_\+\+S\+T\+A\+C\+K\+\_\+\+S\+I\+ZE\mbox{]}}
+
+стек контекстов \mbox{\Hypertarget{struct_v_m_a760a936633eb5c7b8de120b5d78f9ba6}\label{struct_v_m_a760a936633eb5c7b8de120b5d78f9ba6}} 
+\index{VM@{VM}!code@{code}}
+\index{code@{code}!VM@{VM}}
+\subsubsection{\texorpdfstring{code}{code}}
+{\footnotesize\ttfamily unsigned char$\ast$ V\+M\+::code}
+
+байт код \mbox{\Hypertarget{struct_v_m_aa5f1f79d48c3a3512a232000f3eb4c26}\label{struct_v_m_aa5f1f79d48c3a3512a232000f3eb4c26}} 
+\index{VM@{VM}!code\+\_\+size@{code\+\_\+size}}
+\index{code\+\_\+size@{code\+\_\+size}!VM@{VM}}
+\subsubsection{\texorpdfstring{code\+\_\+size}{code\_size}}
+{\footnotesize\ttfamily int V\+M\+::code\+\_\+size}
+
+размер байт кода \mbox{\Hypertarget{struct_v_m_a5a38d2d0aa60e11d8138fff312efb926}\label{struct_v_m_a5a38d2d0aa60e11d8138fff312efb926}} 
+\index{VM@{VM}!globals@{globals}}
+\index{globals@{globals}!VM@{VM}}
+\subsubsection{\texorpdfstring{globals}{globals}}
+{\footnotesize\ttfamily \hyperlink{union_variable}{Variable}$\ast$ V\+M\+::globals}
+
+глобалные переменные \mbox{\Hypertarget{struct_v_m_a68946a4843ec05f3c865d177fa982dbe}\label{struct_v_m_a68946a4843ec05f3c865d177fa982dbe}} 
+\index{VM@{VM}!nglobals@{nglobals}}
+\index{nglobals@{nglobals}!VM@{VM}}
+\subsubsection{\texorpdfstring{nglobals}{nglobals}}
+{\footnotesize\ttfamily int V\+M\+::nglobals}
+
+количество глобальных переменных \mbox{\Hypertarget{struct_v_m_ac82f634bd85dcf9e68f615462f728b55}\label{struct_v_m_ac82f634bd85dcf9e68f615462f728b55}} 
+\index{VM@{VM}!registr\+That\+Ret\+Func@{registr\+That\+Ret\+Func}}
+\index{registr\+That\+Ret\+Func@{registr\+That\+Ret\+Func}!VM@{VM}}
+\subsubsection{\texorpdfstring{registr\+That\+Ret\+Func}{registrThatRetFunc}}
+{\footnotesize\ttfamily \hyperlink{union_variable}{Variable} V\+M\+::registr\+That\+Ret\+Func}
+
+регистр для значения от функции \mbox{\Hypertarget{struct_v_m_a3a031323e2030d712c26dd8f0c79f637}\label{struct_v_m_a3a031323e2030d712c26dd8f0c79f637}} 
+\index{VM@{VM}!stack@{stack}}
+\index{stack@{stack}!VM@{VM}}
+\subsubsection{\texorpdfstring{stack}{stack}}
+{\footnotesize\ttfamily \hyperlink{union_variable}{Variable} V\+M\+::stack\mbox{[}D\+E\+F\+A\+U\+L\+T\+\_\+\+S\+T\+A\+C\+K\+\_\+\+S\+I\+ZE\mbox{]}}
+
+Операндовый стек 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+vm.\+h\end{DoxyCompactItemize}

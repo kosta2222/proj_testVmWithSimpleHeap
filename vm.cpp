@@ -1,11 +1,19 @@
 #include "vm.h"
+/**
+Замечания. В тексте N целые числа, R - вещественные
+*/
+/**
+ * Работаем с данными элементами из ObjectHeap.cpp
+ */
+extern Variable* m_objectMap[];
+extern void dumpHeap ();
 
 /** вызвать пользовательскую функцию
  \param [in] argc количество аргументов
  \param [in] массив целых аргументов
  \return значение
  */
-float
+Variable
 call_user (int funcid, int argc, float *argv)
 {
   float ret = 0;
@@ -75,8 +83,8 @@ static VM_INSTRUCTION vm_instructions[] = {
   {"INVOKE_BY_ORDINAL", 0},
   {"CREATE_STRING", 0},
   {"NEWARRAY", 0}, // создать массив по длине
-  {"IASTORE", 0}, // записать число в массив
-  {"IASTORE", 0}, // загрузить целое из массива целых
+  {"FASTORE", 0}, // записать число R в массив
+  {"FASTORE", 0}, // загрузить R из массива R
   {"DUP", 0}, // дублировать вершину стека
   {"ASTORE", 0}, // сохранить обьект
   {"ALOAD", 0},
@@ -108,67 +116,6 @@ vm_create (unsigned char *code, int code_size, int nglobals)
   vm_init (vm, code, code_size, nglobals);
   return vm;
 }
-// *********
-Variable * m_objectMap[100];
-u4 m_nNextObjectID = 0;
-
-Object
-createNewArray (u4 type, u4 count)
-{
-  Object object;
-  object.heapPtr = NULL;
-  object.type = 0;
-
-  // Создаем массив
-  Variable *obj = (Variable*) malloc (sizeof (Variable)*(count));
-
-  // Добавляем обьект в "карту"
-  if (obj)
-    {
-      memset (obj, 0, sizeof (Variable) * (count));
-
-      object.heapPtr = m_nNextObjectID++;
-      //  obj[0].intValue = type;
-      m_objectMap[object.heapPtr] = obj;
-    }
-
-
-  return object;
-}
-
-void
-dumpHeap ()
-{
-  // обработать "карту"
-  for (int i = 0; i < 10; i++) // возьмем 10 указателей
-    {
-      printf ("key %d=>\n", i);
-
-
-      Variable* ptrElemPointsToWholeObject = m_objectMap[i]; // получаем указатель на массив из "карты"
-
-
-
-      if (m_objectMap[i] != NULL)
-        {
-
-
-          for (int i = 0; i < 10; i++) // Надо отпечатать этот массив
-            {
-              if (ptrElemPointsToWholeObject[i].floatValue != NULL)
-                {
-                  printf ("%f:", ptrElemPointsToWholeObject[i].floatValue);
-
-                }
-            }
-
-
-
-        }
-    }
-
-}
-// *********
 
 /**
 Выполняе байт-коды
@@ -178,7 +125,7 @@ dumpHeap ()
 \param[in] numberFromLocalsAsPar использовать ли число из локальных переменных
 \return число из локальных переменных
  */
-float
+void
 vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
 {
 
@@ -189,24 +136,16 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
 
   float a = 0;
   float b = 0;
-  int addr = 0;
-  int offset = 0;
 
   ip = startip;
   sp = -1;
   callsp = -1;
-  /**
-  следующая операция
-   */
-  /*
-  #define NEXTOP() vm->code[ip]
-   */
-  /**
-  следующий аргумент как 'собирание' 4х байтов
-   */
-  /*
-  #define NEXTARGASI4() (ip+=4 ,(u4) ( (u4) (vm-> code[ip-4]<<24 ) | (u4) ( vm->code[ip-3]<<16 ) | (u4) (vm-> code[ip-2]<<8 ) | (u4) (vm-> code[ip-1] ) ) )
-   */
+
+  int addr = 0;
+  int offset = 0;
+
+
+
   u4 opcode = vm->code[ip];
   while (opcode != HALT)
     {
@@ -221,34 +160,56 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
         {
         case NOOP:
           break;
-        case IADD:
+        case FADD:
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = a + b;
           break;
-        case ISUB:
+        case FSUB:
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = a - b;
           break;
-        case IMUL:
+        case FMUL:
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
-          vm->stack[++sp].floatValue = a * b;
+          vm->stack[++sp].intValue = a * b;
           break;
-        case IDIV:
+        case FDIV:
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = a / b;
           break;
+	  // \todo должна быть поддержка N в компиляторе
+        case IADD:
+          b = vm->stack[sp--].intValue;
+          a = vm->stack[sp--].intValue;
+          vm->stack[++sp].floatValue = a + b;
+          break;
+        case ISUB:
+          b = vm->stack[sp--].intValue;
+          a = vm->stack[sp--].intValue;
+          vm->stack[++sp].intValue = a - b;
+          break;
+        case IMUL:
+          b = vm->stack[sp--].intValue;
+          a = vm->stack[sp--].intValue;
+          vm->stack[++sp].intValue = a * b;
+          break;
+        case IDIV:
+          b = vm->stack[sp--].intValue;
+          a = vm->stack[sp--].intValue;
+          vm->stack[++sp].intValue = a / b;
+          break;
 
+	  // конец должна быть поддержка
         case IREM:// получить остаток от деления
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = (int) a % (int) b;
           break;
 
-        case IPOW:// возведение в степень
+        case FPOW:// возведение в степень
           b = vm->stack[sp--].floatValue;
           a = vm->stack[sp--].floatValue;
           vm->stack[++sp].floatValue = pow (a, b);
@@ -256,56 +217,61 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
         case DUP:// дублирование вершины стека
 
 
-          vm->stack[sp + 1].floatValue = vm->stack[sp].floatValue;
+          vm->stack[sp + 1] = vm->stack[sp];
           sp += 1;
           break;
+	  // создать массив по длине 
         case NEWARRAY:
           {
             vm->stack[sp + 1].object = createNewArray (1, (int) vm->stack[sp].floatValue);
             sp += 1;
             break;
           }
-        case IALOAD: // загрузить значение с массива на стек
+        case FALOAD: // загрузить значение с массива на стек
           {
             // arrayref в стеке - обеспечивается текстом программы getObject!
             Object heapKey = vm->stack[sp - 2].object;
             // берем нужный индекс со стека
             u4 index = (u4) (vm->stack[sp].floatValue);
-            //  записываем элемент - значение массива из кучи
+            //  записываем элемент в стек - значение массива из кучи
             vm->stack[(u4) (sp - 1)] = m_objectMap[(u4) heapKey.heapPtr][index];
             sp -= 1;
             break;
           }
-        case IASTORE: // загрузить значение со стека в массив
+        case FASTORE: // загрузить значение со стека в массив
           {
+            // arrayref в стеке - обеспечивается текстом программы getObject!
             Object heapKey = vm->stack[sp - 2].object;
-            m_objectMap[heapKey.heapPtr][(u4) (vm->stack[sp - 1].floatValue)] = vm->stack[sp];
+            // берем нужный индекс со стека
+            u4 index = (u4) (vm->stack[sp].floatValue);
+            // работаем с кучей - записываем элемент из стека в массив
+            m_objectMap[heapKey.heapPtr][(u4) index] = vm->stack[sp];
             sp -= 3;
             break;
 
           }
-          //        case ILT:
-          //          b = vm->stack[sp--];
-          //          a = vm->stack[sp--];
-          //          vm->stack[++sp] = (a < b) ? true : false;
-          //          break;
-          //        case IEQ:
-          //          b = vm->stack[sp--];
-          //          a = vm->stack[sp--];
-          //          vm->stack[++sp] = (a == b) ? true : false;
-          //          break;
-          //        case BR:
-          //          ip = vm->code[ip];
-          //          break;
-          //        case BRT:
-          //          addr = vm->code[ip];
-          //          if (vm->stack[sp--] == true) ip = addr;
-          //          break;
-          //        case BRF:
-          //          addr = vm->code[ip];
-          //          if (vm->stack[sp--] == false) ip = addr;
-          //          break;
-        case ICONST:
+        case FEQ:
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = (a < b) ? true : false;
+          break;
+        case FEQ:
+          b = vm->stack[sp--].floatValue;
+          a = vm->stack[sp--].floatValue;
+          vm->stack[++sp].floatValue = (a == b) ? true : false;
+          break;
+        case BR:
+          ip =geti2(&vm->code[ip]);
+          break;
+        case BRT:
+          addr = geti2(&vm->code[ip]);
+          if (vm->stack[sp--] == true) ip = addr;
+          break;
+        case BRF:
+          addr =geti2(&vm->code[ip]);
+          if (vm->stack[sp--] == false) ip = addr;
+          break;
+        case FCONST:
 
           vm->stack[++sp].floatValue = *((float*) &vm->code[ip]);
 
@@ -313,37 +279,35 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           ip++;
           break;
 
-          //        case LOAD:
-          //          offset = vm->code[ip++];
-          //          vm->stack[++sp] = vm->call_stack[callsp].locals[offset];
-          //          break;
-          //        case GLOAD:
-          //          addr = vm->code[ip++];
-          //          vm->stack[++sp] = vm->globals[addr];
-          //          break;
-          //        case STORE:
-          //          offset = vm->code[ip++];
-          //          vm->call_stack[callsp].locals[offset] = vm->stack[sp--];
-          //          break;
-          //        case GSTORE:
-          //          addr = vm->code[ip++];
-          //          vm->globals[addr] = vm->stack[sp--];
-          //          break;
-          //        case PRINT:
-          //          {
-          //            int numberFromLocalsAsPar = vm->code[ip++];
-          //            float numberFromLocals = vm->call_stack[callsp].locals[numberFromLocalsAsPar];
-          //            printf ("print: %f\n", numberFromLocals);
-          //            if (returnPrintOpFromLocals_flag)
-          //              {
-          //                return numberFromLocals;
-          //              }
-          //
-          //            break;
-          //          }
-          //        case POP:
-          //          --sp;
-          //          break;
+        case LOAD:
+          offset = vm->code[ip++];
+          vm->stack[++sp] = vm->call_stack[callsp].locals[offset];
+          break;
+        case GLOAD:
+          addr = vm->code[ip++];
+          vm->stack[++sp] = vm->globals[addr];
+          break;
+        case STORE:
+          offset = vm->code[ip++];
+          vm->call_stack[callsp].locals[offset] = vm->stack[sp--];
+          break;
+        case GSTORE:
+          addr = vm->code[ip++];
+          vm->globals[addr] = vm->stack[sp--];
+          break;
+	  // Отпечать R из локальых переменных
+        case PRINT:
+          {
+            int numberFromLocals = vm->code[ip++];
+            Variable value = vm->call_stack[callsp].locals[numberFromLocals];
+            printf ("print float Value: %f\n", value.floatValue);
+
+
+            break;
+          }
+        case POP:
+          --sp;
+          break;
           //        case 25 ... 25 + 15:
           //          {
           //            int argc = (int) vm->stack[sp--];
@@ -356,74 +320,74 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
           //            a = call_user (opcode - 25, argc, argv);
           //            if (argc != 0)
           //              {
-          //                vm->float_registrThatRetFunc = a;
+          //                vm->registrThatRetFunc = a;
           //
           //              }
-          //
-          //
-          //
-          //            break;
-          //
-          //          }
-          //        case CALL:
-          //          {
-          //
-          //            addr = vm->code[ip++];
-          //            int nargs = vm->code[ip++];
-          //            int I_firstarg = sp - nargs + 1;
-          //            ++callsp;
-          //
-          //            vm_context_init (&vm->call_stack[callsp], ip, 26);
-          //
-          //            for (int i = 0; i < nargs; i++)
-          //              {
-          //                vm->call_stack[callsp].locals[i] = vm->stack[I_firstarg + i];
-          //              }
-          //            sp -= nargs;
-          //            ip = addr;
-          //            break;
-          //          }
-          //        case RET:
-          //          {
-          //            ip = vm->call_stack[callsp].returnip;
-          //            callsp--;
-          //            break;
-          //          }
-          //        case STORE_RESULT:
-          //          {
-          //            int int_locNum = vm->code[ip++];
-          //            vm->float_registrThatRetFunc = vm->call_stack[callsp].locals[int_locNum];
-          //            break;
-          //          }
-          //        case LOAD_RESULT:
-          //          {
-          //            vm->stack[++sp] = vm->float_registrThatRetFunc;
-          //            break;
-          //          }
 
 
-        default:
-          {
-            printf ("invalid opcode: %d at ip=%d\n", opcode, (ip - 1));
-            exit (1);
-          }
+
+          break;
 
         }
+    case CALL:
+      {
 
-      if (trace) vm_print_stack (vm->stack, sp);
-      opcode = vm->code[ip];
+        addr = geti2(& vm->code[ip++]);
+        int nargs = vm->code[ip++];
+        int I_firstarg = sp - nargs + 1;
+        ++callsp;
+
+        vm_context_init (&vm->call_stack[callsp], ip, 26);
+
+        for (int i = 0; i < nargs; i++)
+          {
+            vm->call_stack[callsp].locals[i] = vm->stack[I_firstarg + i];
+          }
+        sp -= nargs;
+        ip = addr;
+        break;
+      }
+    case RET:
+      {
+        ip = vm->call_stack[callsp].returnip;
+        callsp--;
+        break;
+      }
+    case STORE_RESULT:
+      {
+        int int_locNum = vm->code[ip++];
+        vm->registrThatRetFunc = vm->call_stack[callsp].locals[int_locNum];
+        break;
+      }
+    case LOAD_RESULT:
+      {
+        vm->stack[++sp] = vm->registrThatRetFunc;
+        break;
+      }
 
 
-
-
+    default:
+      {
+        printf ("invalid opcode: %d at ip=%d\n", opcode, (ip - 1));
+        exit (1);
+      }
 
     }
-  if (trace)
-    {
-      vm_print_data (vm->globals, vm->nglobals);
-    }
-  printf ("Heap:\n");
-  dumpHeap ();
+
+  if (trace) vm_print_stack (vm->stack, sp);
+  opcode = vm->code[ip];
+
+
+
+
+
+}
+if (trace)
+  {
+    vm_print_data (vm->globals, vm->nglobals);
+  }
+printf ("Heap:\n");
+dumpHeap ();
 }
 
 static void
@@ -448,7 +412,7 @@ vm_print_instr (unsigned char *code, int ip)
       printf ("%04d:  %-20s", ip, inst->name);
       break;
     case 1:
-      if (opcode == ICONST)
+      if (opcode == FCONST)
         {
 
           printf ("%04d: %-10s %f", ip, "iconst", *((float*) &(code[ip + 1])));

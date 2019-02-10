@@ -1,0 +1,309 @@
+\hypertarget{class_s__compiler_1_1_lisp_mach}{}\section{S\+\_\+compiler.\+Lisp\+Mach Class Reference}
+\label{class_s__compiler_1_1_lisp_mach}\index{S\+\_\+compiler.\+Lisp\+Mach@{S\+\_\+compiler.\+Lisp\+Mach}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{class_s__compiler_1_1_lisp_mach_ae8fc48aace9204d62bd03ab919f28006}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+def \hyperlink{class_s__compiler_1_1_lisp_mach_a5c4b8e5f7cfd068c6d221a83c74019bf}{me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV} (self, int\+\_\+command)
+\item 
+def \hyperlink{class_s__compiler_1_1_lisp_mach_aa1cda09961d2dfad40a4afe460a280fb}{me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV} (self, mas\+\_\+\+I\+\_\+\+Or\+\_\+\+Str)
+\item 
+def \hyperlink{class_s__compiler_1_1_lisp_mach_a97d7a7d63ea6cdaa32159a7f10947dfb}{me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL} (self)
+\item 
+def \hyperlink{class_s__compiler_1_1_lisp_mach_ae9e76191e088fb5607dcc5f0b30bf831}{\+\_\+\+\_\+str\+\_\+\+\_\+} (self)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_a2d2b9fc9c94523397d8298626e0399c7}\label{class_s__compiler_1_1_lisp_mach_a2d2b9fc9c94523397d8298626e0399c7}} 
+{\bfseries fi\+\_\+dict\+\_\+str\+\_\+int\+\_\+func\+Table}
+\item 
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_ad674b58013fe0d39afdf2365b4e3bae9}\label{class_s__compiler_1_1_lisp_mach_ad674b58013fe0d39afdf2365b4e3bae9}} 
+{\bfseries fi\+\_\+mas\+\_\+\+I\+\_\+byte\+Code}
+\item 
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_adb62f1596f1843efa8a4d04ff23322fc}\label{class_s__compiler_1_1_lisp_mach_adb62f1596f1843efa8a4d04ff23322fc}} 
+{\bfseries fi\+\_\+int\+\_\+start\+Ip}
+\item 
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_ad8b4a40aa190ca4c1048a0e8903dc6a4}\label{class_s__compiler_1_1_lisp_mach_ad8b4a40aa190ca4c1048a0e8903dc6a4}} 
+{\bfseries fi\+\_\+int\+\_\+nargs}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}      Компилятор
+\end{DoxyVerb}
+ 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_ae8fc48aace9204d62bd03ab919f28006}\label{class_s__compiler_1_1_lisp_mach_ae8fc48aace9204d62bd03ab919f28006}} 
+\index{S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def S\+\_\+compiler.\+Lisp\+Mach.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}   заводим карту для функций- <имя функции:индекс ее байткода>,индекс первой команды,которую нужно исполнять 
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}
+144  \textcolor{keyword}{def }\_\_init\_\_(self):
+145   \textcolor{stringliteral}{"""}
+146 \textcolor{stringliteral}{       заводим карту для функций- <имя функции:индекс ее байткода>,индекс первой команды,которую нужно
+       исполнять }
+147 \textcolor{stringliteral}{  """}     
+148   self.fi\_dict\_str\_int\_funcTable=\{\}
+149   self.fi\_mas\_I\_byteCode=[]
+150   self.fi\_int\_startIp=0
+151   self.fi\_int\_nargs=0
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_ae9e76191e088fb5607dcc5f0b30bf831}\label{class_s__compiler_1_1_lisp_mach_ae9e76191e088fb5607dcc5f0b30bf831}} 
+\index{S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}!\+\_\+\+\_\+str\+\_\+\+\_\+@{\+\_\+\+\_\+str\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+str\+\_\+\+\_\+@{\+\_\+\+\_\+str\+\_\+\+\_\+}!S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+str\+\_\+\+\_\+()}{\_\_str\_\_()}}
+{\footnotesize\ttfamily def S\+\_\+compiler.\+Lisp\+Mach.\+\_\+\+\_\+str\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Возвращает строковое представление обьекта компилятора
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}
+338  \textcolor{keyword}{def }\_\_str\_\_(self):
+339      \textcolor{stringliteral}{"""}
+340 \textcolor{stringliteral}{          Возвращает строковое представление обьекта компилятора}
+341 \textcolor{stringliteral}{     """}     
+342      \textcolor{keywordflow}{return} \textcolor{stringliteral}{"func\_table:"}+str(self.fi\_dict\_str\_int\_funcTable)+\textcolor{stringliteral}{"\(\backslash\)nmas\_I\_Or\_Str:"}+\(\backslash\)
+343       \textcolor{stringliteral}{"\(\backslash\)nvector<int>\_b\_c:"}+str(self.fi\_mas\_I\_byteCode)+\textcolor{stringliteral}{"\(\backslash\)nstart\_ip:"}+str(self.fi\_int\_startIp)    
+344      
+345         
+\end{DoxyCode}
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_a5c4b8e5f7cfd068c6d221a83c74019bf}\label{class_s__compiler_1_1_lisp_mach_a5c4b8e5f7cfd068c6d221a83c74019bf}} 
+\index{S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}!me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV@{me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV}}
+\index{me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV@{me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV}!S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}}
+\subsubsection{\texorpdfstring{me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+Ir\+V()}{me\_gen\_byteCode\_SIrV()}}
+{\footnotesize\ttfamily def S\+\_\+compiler.\+Lisp\+Mach.\+me\+\_\+gen\+\_\+byte\+Code\+\_\+\+S\+IrV (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{int\+\_\+command }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}"
+генерация байткода-int_command-опкод который нужно добавить для результирующего списка,для Vm
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}
+152  \textcolor{keyword}{def }me\_gen\_byteCode\_SIrV(self,int\_command):
+153      \textcolor{stringliteral}{""""}
+154 \textcolor{stringliteral}{          генерация байткода-int\_command-опкод который нужно добавить для результирующего списка,для Vm}
+155 \textcolor{stringliteral}{     """}     
+156      self.fi\_mas\_I\_byteCode.append(int\_command)
+\end{DoxyCode}
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_aa1cda09961d2dfad40a4afe460a280fb}\label{class_s__compiler_1_1_lisp_mach_aa1cda09961d2dfad40a4afe460a280fb}} 
+\index{S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}!me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV@{me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV}}
+\index{me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV@{me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV}!S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}}
+\subsubsection{\texorpdfstring{me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+Mr\+V()}{me\_recurs\_evalPerList\_SMrV()}}
+{\footnotesize\ttfamily def S\+\_\+compiler.\+Lisp\+Mach.\+me\+\_\+recurs\+\_\+eval\+Per\+List\+\_\+\+S\+MrV (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{mas\+\_\+\+I\+\_\+\+Or\+\_\+\+Str }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb} рекурсивный разбор s-выражения mas_I_Or_Str -список с числами и строками 
+ как именами того какой байт-код генерировать
+ смотря на аргумент self.method_genB_C_IrV можно понять синтаксис языка 
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}
+157  \textcolor{keyword}{def }me\_recurs\_evalPerList\_SMrV(self,mas\_I\_Or\_Str):
+158     \textcolor{stringliteral}{"""}
+159 \textcolor{stringliteral}{         рекурсивный разбор s-выражения mas\_I\_Or\_Str -список с числами и строками }
+160 \textcolor{stringliteral}{         как именами того какой байт-код генерировать}
+161 \textcolor{stringliteral}{         смотря на аргумент self.method\_genB\_C\_IrV можно понять синтаксис языка }
+162 \textcolor{stringliteral}{    """}     
+163     print(mas\_I\_Or\_Str)
+164     \textcolor{keywordflow}{if} isa(mas\_I\_Or\_Str, Symbol) : 
+165         \textcolor{keywordflow}{pass}
+166     \textcolor{keywordflow}{elif}  isa(mas\_I\_Or\_Str[0], float):\textcolor{comment}{# Это число}
+167         self.me\_gen\_byteCode\_SIrV(ICONST)
+168         \textcolor{keywordflow}{for} i1 \textcolor{keywordflow}{in} floatToBytes\_SfloatRbytes(mas\_I\_Or\_Str[0]):\textcolor{comment}{# расскладываем float число на байты }
+169             self.me\_gen\_byteCode\_SIrV(i1)  \textcolor{comment}{# каждый байт записываем в выходной байт массив  }
+170     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'//'}: \textcolor{comment}{# Это комментарии}
+171         \textcolor{keywordflow}{pass}
+172     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'set!'}: \textcolor{comment}{# записываем константу/выражение в индификатор}
+173         (\_, var, exp) = mas\_I\_Or\_Str
+174         self.me\_recurs\_evalPerList\_SMrV(exp)
+175         self.me\_gen\_byteCode\_SIrV(STORE)
+176         int\_ordLocToStore=ord(var)-ord(\textcolor{stringliteral}{"a"}) \textcolor{comment}{# определим индекс буквы}
+177         self.me\_gen\_byteCode\_SIrV(int\_ordLocToStore)
+178     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'setResult!'}:  \textcolor{comment}{# сохранить с вершины стека в регистр }
+179         self.me\_gen\_byteCode\_SIrV(STORE\_RESULT)         
+180     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'defun'}: \textcolor{comment}{#определить функцию          }
+181         (\_,str\_nameFunc, list\_arg,list\_expr) = mas\_I\_Or\_Str
+182         \textcolor{keywordflow}{if} str\_nameFunc==\textcolor{stringliteral}{'main'}:
+183             self.fi\_int\_startIp=len(self.fi\_mas\_I\_byteCode)
+184         \textcolor{keywordflow}{else}:  
+185             self.fi\_dict\_str\_int\_funcTable[str\_nameFunc]=len(self.fi\_mas\_I\_byteCode)
+186         self.me\_recurs\_evalPerList\_SMrV(list\_arg)    
+187         self.me\_recurs\_evalPerList\_SMrV(list\_expr)                  
+188     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'$'}: \textcolor{comment}{# выполнить выражения слева направо}
+189         \textcolor{keywordflow}{for} exp \textcolor{keywordflow}{in} mas\_I\_Or\_Str[1:]:
+190             val = self.me\_recurs\_evalPerList\_SMrV(exp)
+191         \textcolor{keywordflow}{return} val
+192     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'return'}: \textcolor{comment}{# завершить функцию}
+193         self.me\_gen\_byteCode\_SIrV(RET)     
+194     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'arif'}: \textcolor{comment}{# Это арифметическое выражение}
+195         mas\_I\_Or\_Str\_resOpnZapis=opn(mas\_I\_Or\_Str[1:]) \textcolor{comment}{# из инфиксной записи в ОПЗ }
+196         \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} mas\_I\_Or\_Str\_resOpnZapis:
+197             \textcolor{keywordflow}{if} isOp(i):
+198                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"+"}: 
+199                     self.me\_gen\_byteCode\_SIrV(IADD)
+200                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"-"}:
+201                     self.me\_gen\_byteCode\_SIrV(ISUB)
+202                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"*"}:
+203                     self.me\_gen\_byteCode\_SIrV(IMUL)
+204                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"/"}: 
+205                     self.me\_gen\_byteCode\_SIrV(IDIV)  
+206                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"%"}:
+207                     self.me\_gen\_byteCode\_SIrV(IREM)
+208                 \textcolor{keywordflow}{if} i==\textcolor{stringliteral}{"^"}: 
+209                     self.me\_gen\_byteCode\_SIrV(IPOW)     
+210             \textcolor{keywordflow}{elif} re.match(\textcolor{stringliteral}{"[a-z]+"},str(i)):\textcolor{comment}{# Если это строковый индификатор и не есть z - загрузить его из
+       локальных переменных }
+211                 \textcolor{keywordflow}{if} str(i)!=\textcolor{stringliteral}{'z'}:
+212                   self.me\_gen\_byteCode\_SIrV(LOAD)
+213                   self.me\_gen\_byteCode\_SIrV(ord(i)-ord(\textcolor{stringliteral}{"a"}))
+214                 \textcolor{keywordflow}{else}:\textcolor{comment}{# если это z то згужаем с регистра}
+215                     self.me\_gen\_byteCode\_SIrV(LOAD\_RESULT)
+216             \textcolor{keywordflow}{elif} isa(i,float):
+217                 self.me\_gen\_byteCode\_SIrV(ICONST)
+218                 \textcolor{keywordflow}{for} i1 \textcolor{keywordflow}{in} floatToBytes\_SfloatRbytes(i):
+219                     self.me\_gen\_byteCode\_SIrV(i1)                    
+220     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'print'}:\textcolor{comment}{# отпечать букву - индидификатор}
+221         \textcolor{keywordflow}{for} str\_temp\_BukvaKakChislo \textcolor{keywordflow}{in} mas\_I\_Or\_Str[1:]:  
+222           self.me\_gen\_byteCode\_SIrV(PRINT)
+223           self.me\_gen\_byteCode\_SIrV(ord(str\_temp\_BukvaKakChislo)-ord(\textcolor{stringliteral}{'a'}))
+224     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'call'}:\textcolor{comment}{# вызвать функцию}
+225         (\_,str\_nameFunctionToCallFromMainFunction,list\_args)=mas\_I\_Or\_Str
+226         int\_nameFunctionToCallFromMainFunction=self.fi\_dict\_str\_int\_funcTable[
+      str\_nameFunctionToCallFromMainFunction]
+227         print(int\_nameFunctionToCallFromMainFunction)
+228         self.me\_recurs\_evalPerList\_SMrV(list\_args)
+229         self.me\_gen\_byteCode\_SIrV(CALL)
+230         self.me\_gen\_byteCode\_SIrV(int\_nameFunctionToCallFromMainFunction)
+231         self.me\_gen\_byteCode\_SIrV(self.fi\_int\_nargs)
+232     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'<'}:\textcolor{comment}{# сравнить на меньше}
+233         (\_,list\_arif1,list\_arif2)=mas\_I\_Or\_Str
+234         self.me\_recurs\_evalPerList\_SMrV(list\_arif1)
+235         self.me\_recurs\_evalPerList\_SMrV(list\_arif2)
+236         self.me\_gen\_byteCode\_SIrV(ILT)
+237     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'='}:\textcolor{comment}{# сравнить на равенство}
+238         (\_,list\_arif1,list\_arif2)=mas\_I\_Or\_Str
+239         self.me\_recurs\_evalPerList\_SMrV(list\_arif1)
+240         self.me\_recurs\_evalPerList\_SMrV(list\_arif2)
+241         self.me\_gen\_byteCode\_SIrV(IEQ)        
+242     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'if'}:\textcolor{comment}{# если}
+243         (\_,list\_test,list\_trueEpr,list\_falseExpr)=mas\_I\_Or\_Str
+244         self.me\_recurs\_evalPerList\_SMrV(list\_test)
+245         self.me\_gen\_byteCode\_SIrV(BRF)
+246         int\_addr1=len(self.fi\_mas\_I\_byteCode)
+247         self.me\_gen\_byteCode\_SIrV(0)
+248         self.me\_recurs\_evalPerList\_SMrV(list\_trueEpr)
+249         self.me\_gen\_byteCode\_SIrV(BR)
+250         int\_adr2=len(self.fi\_mas\_I\_byteCode)
+251         self.me\_gen\_byteCode\_SIrV(0)
+252         self.fi\_mas\_I\_byteCode[int\_addr1]=len(self.fi\_mas\_I\_byteCode)
+253         self.me\_recurs\_evalPerList\_SMrV(list\_falseExpr)
+254         self.fi\_mas\_I\_byteCode[int\_adr2]=len(self.fi\_mas\_I\_byteCode)
+255     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'while'}: \textcolor{comment}{# пока}
+256         (\_,list\_test,list\_whileBody)=mas\_I\_Or\_Str
+257         int\_addr1=len(self.fi\_mas\_I\_byteCode)
+258         self.me\_recurs\_evalPerList\_SMrV(list\_test)
+259         self.me\_gen\_byteCode\_SIrV(BRF)
+260         int\_addr2=len(self.fi\_mas\_I\_byteCode)
+261         self.me\_gen\_byteCode\_SIrV(0)
+262         self.me\_recurs\_evalPerList\_SMrV(list\_whileBody)
+263         self.me\_gen\_byteCode\_SIrV(BR)
+264         self.me\_gen\_byteCode\_SIrV(int\_addr1)
+265         self.fi\_mas\_I\_byteCode[int\_addr2]=len(self.fi\_mas\_I\_byteCode)
+266         
+267     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'params'}: \textcolor{comment}{# параметры функции}
+268         j=0
+269         \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} mas\_I\_Or\_Str[1:]:
+270             self.me\_gen\_byteCode\_SIrV(LOAD)
+271             self.me\_gen\_byteCode\_SIrV(j)
+272             self.me\_gen\_byteCode\_SIrV(STORE)
+273             self.me\_gen\_byteCode\_SIrV(ord(i)-ord(\textcolor{stringliteral}{'a'}))
+274             j+=1
+275     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0] == \textcolor{stringliteral}{'args'}: \textcolor{comment}{# аргументы функции}
+276         j=0
+277         \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} mas\_I\_Or\_Str[1:]:
+278             \textcolor{keywordflow}{if}  isa(i,float): 
+279                 self.me\_gen\_byteCode\_SIrV(ICONST)
+280                 \textcolor{keywordflow}{for} i1 \textcolor{keywordflow}{in} floatToBytes\_SfloatRbytes(i):
+281                     self.me\_gen\_byteCode\_SIrV(i1)                
+282             \textcolor{keywordflow}{elif} isa(i,str):
+283                 self.me\_gen\_byteCode\_SIrV(LOAD)
+284                 self.me\_gen\_byteCode\_SIrV(int(ord(i)-ord(\textcolor{stringliteral}{"a"})))
+285             j+=1
+286         self.fi\_int\_nargs=j
+287     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'invoke\_by\_ordinal'}: \textcolor{comment}{# вызвать нативную функцию}
+288         (\_,funcid)=mas\_I\_Or\_Str
+289         self.me\_recurs\_evalPerList\_SMrV(funcid)
+290         self.me\_gen\_byteCode\_SIrV(INVOKE\_BY\_ORDINAL)
+291         
+292     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'create\_string'}: \textcolor{comment}{# создаем строку }
+293         (\_,argStr)= mas\_I\_Or\_Str
+294         self.me\_gen\_byteCode\_SIrV(CREATE\_STRING)
+295         self.me\_gen\_byteCode\_SIrV(argStr)
+296     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'newarray'}: \textcolor{comment}{# создаем массив в куче некоторой длины}
+297         (\_,arrLen)=mas\_I\_Or\_Str
+298         self.me\_recurs\_evalPerList\_SMrV(arrLen)
+299         self.me\_gen\_byteCode\_SIrV(NEWARRAY)
+300     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'iastore'}: \textcolor{comment}{# записываем значение элемента массива}
+301         (\_,index,val)=mas\_I\_Or\_Str
+302         self.me\_recurs\_evalPerList\_SMrV(index)
+303         self.me\_recurs\_evalPerList\_SMrV(val)
+304         self.me\_gen\_byteCode\_SIrV(IASTORE)
+305     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'iaload'}: \textcolor{comment}{# грузит значение элемента из массива }
+306         self.me\_gen\_byteCode\_SIrV(IALOAD)
+307     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'dup'}: \textcolor{comment}{# дублируем вершину стека}
+308         self.me\_gen\_byteCode\_SIrV(DUP)
+309     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'setObj!'}:
+310         \textcolor{stringliteral}{"""}
+311 \textcolor{stringliteral}{        setObj! выражает ASTORE байт-код, который сохраняет обьект(массив например) в переменную}
+312 \textcolor{stringliteral}{        """}
+313         (\_,indf,arrayObj)=mas\_I\_Or\_Str
+314         self.me\_recurs\_evalPerList\_SMrV(arrayObj)
+315         self.me\_gen\_byteCode\_SIrV(ASTORE)
+316         self.me\_gen\_byteCode\_SIrV(ord(indf)-ord(\textcolor{stringliteral}{"a"}))
+317     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'getObj!'}: \textcolor{comment}{# грузит обьект-массив на стек}
+318         \textcolor{stringliteral}{"""}
+319 \textcolor{stringliteral}{        getObj! выражает ALOAD байт-код, который грузит ссылку обьекта(массив например) на стек}
+320 \textcolor{stringliteral}{        """}
+321         (\_,indf)=mas\_I\_Or\_Str
+322         self.me\_gen\_byteCode\_SIrV(ALOAD)
+323         self.me\_gen\_byteCode\_SIrV(ord(indf)-ord(\textcolor{stringliteral}{"a"}))        
+324         
+325     \textcolor{keywordflow}{elif} mas\_I\_Or\_Str[0]==\textcolor{stringliteral}{'pass'}: \textcolor{comment}{# ничего не делать}
+326         self.me\_gen\_byteCode\_SIrV(NOOP)
+327         
+328     \textcolor{keywordflow}{else}: \textcolor{comment}{# ошибка компиляции}
+329         \textcolor{keywordflow}{raise} Exception(\textcolor{stringliteral}{"Unknown keyword %s"}%mas\_I\_Or\_Str[0])
+330             
+331    
+332         
+\end{DoxyCode}
+\mbox{\Hypertarget{class_s__compiler_1_1_lisp_mach_a97d7a7d63ea6cdaa32159a7f10947dfb}\label{class_s__compiler_1_1_lisp_mach_a97d7a7d63ea6cdaa32159a7f10947dfb}} 
+\index{S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}!me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL@{me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL}}
+\index{me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL@{me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL}!S\+\_\+compiler\+::\+Lisp\+Mach@{S\+\_\+compiler\+::\+Lisp\+Mach}}
+\subsubsection{\texorpdfstring{me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+Vr\+L()}{me\_ret\_byteCode\_SVrL()}}
+{\footnotesize\ttfamily def S\+\_\+compiler.\+Lisp\+Mach.\+me\+\_\+ret\+\_\+byte\+Code\+\_\+\+S\+VrL (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb} Возвращает результирующий байт код для ВМ 
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}
+333  \textcolor{keyword}{def }me\_ret\_byteCode\_SVrL(self):
+334     \textcolor{stringliteral}{"""}
+335 \textcolor{stringliteral}{         Возвращает результирующий байт код для ВМ }
+336 \textcolor{stringliteral}{    """}      
+337     \textcolor{keywordflow}{return} self.fi\_mas\_I\_byteCode
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+dist/\+Debug/\+Min\+G\+W-\/\+Windows/S\+\_\+compiler.\+py\end{DoxyCompactItemize}
