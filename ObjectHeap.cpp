@@ -14,7 +14,7 @@ u4 m_nNextObjectID = 0;
   \return Object для стека там содержится информация где содержится массив
  */
 Object
-createNewArray (u4 type, u4 count)
+createNewArray (u1 type, u4 count)
 {
 
   Object object;

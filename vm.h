@@ -40,15 +40,19 @@ typedef enum {
     RET, ///<завершает функцию
     STORE_RESULT, ///<сохранить результат функции специальный регистр
     LOAD_RESULT, ///<загрузить результат прошлой функции из специального регистра на стек
-    INVOKE_BY_ORDINAL, //< вызвать функцию по номеру в виртуальной машине
-    CREATE_STRING, //< создать строку в куче
+    // \todo
+    INVOKE_IN_VM, //< вызвать функцию по номеру в виртуальной машине
+    // \todo
+    CREATESTRING, //< создать строку в куче
     NEWARRAY, //< создать массив в куче,взяв длину со стека
     FASTORE, //<сохранить значение в массиве
     FALOAD, //< загрузить значение из массива на стек
     DUP, // < дублировать вершину стека
+    // \todo
     ASTORE, //< сохранить ссылку на объект в массив переменных(переменные)
+    // \todo
     ALOAD, //< загрузить ссылку на обьект на стек
-    HALT ///<остановит виртуальную машину
+    STOP ///<остановит виртуальную машину
 } VM_CODE;
 
 /**
@@ -66,12 +70,12 @@ typedef struct {
     /**  байт код */
     unsigned char *code;
     /**  размер байт кода */
-    int code_size;
+    u4 code_size;
 
     /**  глобалные переменные */
     Variable *globals;
     /**  количество глобальных переменных */
-    int nglobals;
+    u1 nglobals;
 
     /**  Операндовый стек */
     Variable stack[DEFAULT_STACK_SIZE];
@@ -82,23 +86,33 @@ typedef struct {
 } VM;
 
 /** создать виртуальную машину */
-VM *vm_create(unsigned char *code, int code_size, int nglobals);
+VM *vm_create(unsigned char *code, u4 code_size, u1 nglobals);
 /** освободить память из под виртуальной машины */
 void vm_free(VM *vm);
 /** инициализируем виртуальную машину */
-void vm_init(VM *vm, unsigned char *code, int code_size, int nglobals);
+void vm_init(VM *vm, unsigned char *code, u4 code_size, u1 nglobals);
 /** выполнение инструкций */
-void vm_exec(VM *vm, int startip, bool trace, int returnPrintOp_flag);
+void vm_exec(VM *vm, u4 startip, bool trace);
 /** печатаем инструкцию */
-void vm_print_instr(unsigned char *code, int ip);
+void vm_print_instr(unsigned char *code, u4 ip);
 /** печатаем стек */
-void vm_print_stack(Variable *stack, int count);
+void vm_print_stack(Variable *stack, u1 count);
 /** печатаем глобальные переменные*/
-void vm_print_data(float *globals, int count);
+void vm_print_data(Variable *globals, u1 count);
 /** вызвать пользовательскую функцию */
 Variable call_user(int funcid, int argc, float *argv);
+/**
+  Создание массива в куче
+  \param type тип обьекта
+  \param count количество элементов со стека
+  \return Object для стека там содержится информация где содержится массив
+ */
+Object createNewArray (u1 type, u4 count);
 
-Object createNewArray (u4 type, u4 count);
+/**
+  Просто отпечатать кучу
+ */
+void dumpHeap ()
 
 f4 getf4(char *p)
 {

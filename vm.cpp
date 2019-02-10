@@ -6,7 +6,7 @@
  * Работаем с данными элементами из ObjectHeap.cpp
  */
 extern Variable* m_objectMap[];
-extern void dumpHeap ();
+
 
 /** вызвать пользовательскую функцию
  \param [in] argc количество аргументов
@@ -16,7 +16,7 @@ extern void dumpHeap ();
 Variable
 call_user (int funcid, int argc, float *argv)
 {
-  float ret = 0;
+  Variable ret = 0;
   int i;
 
   if (funcid == 0)
@@ -51,7 +51,7 @@ typedef struct
   /** имя инструкции*/
   char name[20];
   /** количество аргументов*/
-  int nargs;
+  u1 nargs;
 } VM_INSTRUCTION;
 
 /**Массив данных о каждой инструкции */
@@ -80,35 +80,35 @@ static VM_INSTRUCTION vm_instructions[] = {
   { "ret", 0},
   {"store_result", 1},
   {"load_result", 0},
-  {"INVOKE_BY_ORDINAL", 0},
-  {"CREATE_STRING", 0},
-  {"NEWARRAY", 0}, // создать массив по длине
-  {"FASTORE", 0}, // записать число R в массив
-  {"FASTORE", 0}, // загрузить R из массива R
-  {"DUP", 0}, // дублировать вершину стека
-  {"ASTORE", 0}, // сохранить обьект
-  {"ALOAD", 0},
-  { "halt", 0}
+  {"invoke_in_vm", 0},
+  {"createstring", 0},
+  {"newarray", 0}, 
+  {"fastore", 0}, 
+  {"faload", 0},
+  {"dup", 0}, 
+  {"astore", 0}, 
+  {"aload", 0},
+  { "stop", 0}
 };
 /**Инициализация контекста */
-static void vm_context_init (Context *ctx, int ip, int nlocals);
-
+static void vm_context_init (Context *ctx, u4 ip, u1 nlocals);
+/** инициализируем виртуальную машину */
 void
-vm_init (VM *vm, unsigned char *code, int code_size, int nglobals)
+vm_init (VM *vm, unsigned char *code, u4 code_size, u1 nglobals)
 {
   vm->code = code;
   vm->code_size = code_size;
-  vm->globals = (float*) calloc (nglobals, sizeof (int));
+  vm->globals = (Variable*) calloc (nglobals, sizeof (int));
   vm->nglobals = nglobals;
 }
-
+/** освободить память из под виртуальной машины */
 void
 vm_free (VM *vm)
 {
   free (vm->globals);
   free (vm);
 }
-
+/** создать виртуальную машину */
 VM *
 vm_create (unsigned char *code, int code_size, int nglobals)
 {
@@ -126,23 +126,23 @@ vm_create (unsigned char *code, int code_size, int nglobals)
 \return число из локальных переменных
  */
 void
-vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
+vm_exec (VM *vm, u4  startip, bool trace)
 {
 
 
-  int ip;
-  int sp;
-  int callsp;
+  u4 ip;
+  u4 sp;
+  u4 callsp;
 
-  float a = 0;
-  float b = 0;
+  f4 a = 0;
+  f4 b = 0;
 
   ip = startip;
   sp = -1;
   callsp = -1;
 
-  int addr = 0;
-  int offset = 0;
+  i2 addr ;
+  u1 n_locNum;
 
 
 
@@ -333,8 +333,8 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
       {
 
         addr = geti2(& vm->code[ip++]);
-        int nargs = vm->code[ip++];
-        int I_firstarg = sp - nargs + 1;
+        u1  nargs = vm->code[ip++];
+        u1 nFirstarg = sp - nargs + 1;
         ++callsp;
 
         vm_context_init (&vm->call_stack[callsp], ip, 26);
@@ -355,7 +355,7 @@ vm_exec (VM *vm, int startip, bool trace, int returnPrintOpFromLocals_flag)
       }
     case STORE_RESULT:
       {
-        int int_locNum = vm->code[ip++];
+         n_locNum = vm->code[ip++];
         vm->registrThatRetFunc = vm->call_stack[callsp].locals[int_locNum];
         break;
       }
@@ -404,7 +404,7 @@ void
 vm_print_instr (unsigned char *code, int ip)
 {
 
-  int opcode = code[ip];
+  u4 opcode = code[ip];
   VM_INSTRUCTION *inst = &vm_instructions[opcode];
   switch (inst->nargs)
     {
@@ -447,7 +447,7 @@ vm_print_stack (Variable *stack, int count)
 }
 
 void
-vm_print_data (float *globals, int count)
+vm_print_data (Variable *globals, int count)
 {
   printf ("Data memory:\n");
   for (int i = 0; i < count; i++)
